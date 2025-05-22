@@ -2,6 +2,7 @@ package db
 
 import (
 	"cryptodiary/config"
+	"cryptodiary/models"
 	"fmt"
 
 	"gorm.io/driver/postgres"
@@ -34,4 +35,14 @@ func NewPostgresDB(cfg config.DatabaseConfig) (Database, error) {
 	}
 
 	return &PostgresDB{db: db}, nil
+}
+
+// Migrate performs database migrations
+func (p *PostgresDB) Migrate() error {
+	// Auto migrate the Entry model
+	if err := p.db.AutoMigrate(&models.Entry{}); err != nil {
+		return fmt.Errorf("failed to migrate database: %w", err)
+	}
+
+	return nil
 }
